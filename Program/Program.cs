@@ -8,14 +8,7 @@ namespace Program
     {
         public static void Main()
         {
-            /*
-            [DataRow(100.0, 25.5, 3.1,
-                 1.0, 0.255, 0.031)]
-            [DataRow(100.0, 25.58, 3.13,
-                 1.0, 0.255, 0.031)]
-            */
-
-            var temp = new Pudelko();
+            var temp = new Pudelko(11, 2.0,unit: UnitOfMeasure.milimeter);
             Console.WriteLine(temp);
             Console.WriteLine(temp.a);
         }

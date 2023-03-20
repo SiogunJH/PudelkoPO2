@@ -70,6 +70,7 @@ namespace PudelkoLibrary
         }
 
         //String related
+        
         public string ToString(string desiredUnit)
         {
             if (desiredUnit == null) desiredUnit = "m";
@@ -87,8 +88,11 @@ namespace PudelkoLibrary
             }
         }
 
+        public override string ToString()
+    => string.Format("{1:0.000} {0} × {2:0.000} {0} × {3:0.000} {0}", UnitToString(UnitOfMeasure.meter), A, B, C);
+
         public string ToString(string format, IFormatProvider formatProvider)
-            => string.Format("{1} {0} × {2} {0} × {3} {0}", UnitToString(UnitOfMeasure.meter), A, B, C);
+            => string.Format("{1:0.000} {0} × {2:0.000} {0} × {3:0.000} {0}", UnitToString(UnitOfMeasure.meter), A, B, C);
 
 
         // --==## [CONSTRUCTORS] ##==--
@@ -96,17 +100,21 @@ namespace PudelkoLibrary
         {
         }
 
-        public Pudelko(double a = 0.1, double b = 0.1, double c = 0.1, UnitOfMeasure unit = UnitOfMeasure.meter)
+        public Pudelko(double? a = null, double? b = null, double? c = null, UnitOfMeasure unit = UnitOfMeasure.meter)
         {
-            this.a = (int)Math.Floor(SizeToSize(a, unit, UnitOfMeasure.milimeter));
-            this.b = (int)Math.Floor(SizeToSize(b, unit, UnitOfMeasure.milimeter));
-            this.c = (int)Math.Floor(SizeToSize(c, unit, UnitOfMeasure.milimeter));
+            // Set default values
+            if (a == null) a = SizeToSize(0.1, UnitOfMeasure.meter, unit);
+            if (b == null) b = SizeToSize(0.1, UnitOfMeasure.meter, unit);
+            if (c == null) c = SizeToSize(0.1, UnitOfMeasure.meter, unit);
+
+            // Assign values
+            this.a = (int)Math.Floor(SizeToSize((double)a, unit, UnitOfMeasure.milimeter));
+            this.b = (int)Math.Floor(SizeToSize((double)b, unit, UnitOfMeasure.milimeter));
+            this.c = (int)Math.Floor(SizeToSize((double)c, unit, UnitOfMeasure.milimeter));
             this.Unit = unit;
 
-            if (a <= 0 || b <= 0 || c <= 0) //Negative values and near zeros
-                throw new ArgumentOutOfRangeException();
-
-            if (a > 10000 || b > 10000 || c > 10000) //Too big values
+            //Test for values out of range from 1mm to 10000mm
+            if (this.a <= 0 || this.b <= 0 || this.c <= 0 || this.a > 10000 || this.b > 10000 || this.c > 10000)
                 throw new ArgumentOutOfRangeException();
         }
     }
