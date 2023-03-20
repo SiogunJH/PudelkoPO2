@@ -1,61 +1,47 @@
-﻿using System;
+using System;
 using PudelkoLibrary.Enums;
-
 
 namespace PudelkoLibrary
 {
     public sealed class Pudelko : IFormattable
     {
-        //============================================================================
-
-        public readonly int a;
+        // --==## [CLASS VARIABLES] ##==--
+        private readonly int a;
         public double A
         {
-            get => MilimeterToAny(a, Unit);
+            get => SizeToSize(a, UnitOfMeasure.milimeter, Unit);
         }
-        public readonly int b;
+        private readonly int b;
         public double B
         {
-            get => MilimeterToAny(b, Unit);
+            get => SizeToSize(b, UnitOfMeasure.milimeter, Unit);
         }
-        public readonly int c;
+        private readonly int c;
         public double C
         {
-            get => MilimeterToAny(c, Unit);
+            get => SizeToSize(c, UnitOfMeasure.milimeter, Unit);
         }
-        public UnitOfMeasure Unit { get; set; }
+        private UnitOfMeasure Unit;
 
-        //============================================================================
-        //                                   METHODS
-        //============================================================================
+        // --==## [METHODS] ##==--
 
-        public double Objetosc
+        //Internal
+        private double SizeToSize(double size, UnitOfMeasure unit, UnitOfMeasure desiredUnit) => size * (double)UnitToNumber(unit) / (double)UnitToNumber(desiredUnit);
+
+        private string UnitToString(UnitOfMeasure unit)
         {
-            get
+            switch (unit)
             {
-                return Math.Round(A * B * C, 9);
+                case UnitOfMeasure.meter:
+                    return "m";
+                case UnitOfMeasure.centimeter:
+                    return "cm";
+                default:
+                    return "mm";
             }
         }
 
-        public double Pole
-        {
-            get
-            {
-                return Math.Round(2 * ((A * B) + (B * C) + (C * A)), 6);
-            }
-        }
-
-        //============================================================================
-        //                                     TOOLS
-        //============================================================================
-
-        public double MilimeterToAny(int size, UnitOfMeasure unit) =>
-            (double)size / UnitToNumber(unit);
-
-        public int AnyToMilimeter(double size, UnitOfMeasure unit) =>
-            (int)(size * (double)UnitToNumber(unit));
-
-        public int UnitToNumber(UnitOfMeasure unit)
+        private int UnitToNumber(UnitOfMeasure unit)
         {
             switch (unit)
             {
@@ -68,7 +54,7 @@ namespace PudelkoLibrary
             }
         }
 
-        public UnitOfMeasure StringToUnit(string unit)
+        private UnitOfMeasure StringToUnit(string unit)
         {
             switch (unit)
             {
@@ -79,50 +65,35 @@ namespace PudelkoLibrary
                 case "mm":
                     return UnitOfMeasure.milimeter;
                 default:
-                    throw new FormatException();
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
-        public string ToString(string format)
+        //String related
+        public string ToString(string arg1, IFormatProvider arg2)
+            => String.Format("{1} {0} × {2} {0} × {3} {0}", UnitToString(Unit), A, B, C);
+
+        public string ToString(string desiredUnit)
+            => String.Format("{1} {0} × {2} {0} × {3} {0}", UnitToString(Unit), SizeToSize(a, UnitOfMeasure.milimeter, StringToUnit(desiredUnit)), SizeToSize(b, UnitOfMeasure.milimeter, StringToUnit(desiredUnit)), SizeToSize(c, UnitOfMeasure.milimeter, StringToUnit(desiredUnit)));
+
+
+        // --==## [CONSTRUCTORS] ##==--
+        public Pudelko() : this(0.1, 0.1, 0.1, UnitOfMeasure.meter)
         {
-            string toReturn = "";
-            switch (format)
-            {
-                case "m":
-                    toReturn = String.Format("{1:0.000} {0} × {2:0.000} {0} × {3:0.000} {0}", format, MilimeterToAny(a, StringToUnit(format)), MilimeterToAny(b, StringToUnit(format)), MilimeterToAny(c, StringToUnit(format)));
-                    break;
-                case "cm":
-                    toReturn = String.Format("{1:0.0} {0} × {2:0.0} {0} × {3:0.0} {0}", format, MilimeterToAny(a, StringToUnit(format)), MilimeterToAny(b, StringToUnit(format)), MilimeterToAny(c, StringToUnit(format)));
-                    break;
-                case "mm":
-                    toReturn = String.Format("{1:0} {0} × {2:0} {0} × {3:0} {0}", format, MilimeterToAny(a, StringToUnit(format)), MilimeterToAny(b, StringToUnit(format)), MilimeterToAny(c, StringToUnit(format)));
-                    break;
-            }
-            return toReturn;
         }
 
-        public string ToString(string format, IFormatProvider formatProvider) =>
-            String.Format("{1:0.000} {0} × {2:0.000} {0} × {3:0.000} {0}", "m", MilimeterToAny(a, UnitOfMeasure.meter), MilimeterToAny(b, UnitOfMeasure.meter), MilimeterToAny(c, UnitOfMeasure.meter));
-
-        //============================================================================
-        //                                  CONSTRUCTOR
-        //============================================================================
-        public Pudelko(double a = 0.1f, double b = 0.1f, double c = 0.1f, UnitOfMeasure unit = UnitOfMeasure.meter)
+        public Pudelko(double a = 0.1, double b = 0.1, double c = 0.1, UnitOfMeasure unit = UnitOfMeasure.meter)
         {
-            // Set Unit
-            Unit = unit;
+            this.a = (int)SizeToSize(a, unit, UnitOfMeasure.milimeter);
+            this.b = (int)SizeToSize(b, unit, UnitOfMeasure.milimeter);
+            this.c = (int)SizeToSize(c, unit, UnitOfMeasure.milimeter);
+            this.Unit = unit;
 
-            // Check if within borders
-            if (a < 0 || b < 0 || c < 0 || AnyToMilimeter(a, Unit) > 10000 || AnyToMilimeter(b, Unit) > 10000 || AnyToMilimeter(c, Unit) > 10000)
+            if (A <= 0 || B <= 0 || B <= 0) //Negative values
                 throw new ArgumentOutOfRangeException();
 
-            // Set Size
-            this.a = AnyToMilimeter(a, Unit);
-            this.b = AnyToMilimeter(b, Unit);
-            this.c = AnyToMilimeter(c, Unit);
+            if (a > 10000 || b > 10000 || c > 10000) //Too big values
+                throw new ArgumentOutOfRangeException();
         }
-
-        //============================================================================
-
     }
 }
