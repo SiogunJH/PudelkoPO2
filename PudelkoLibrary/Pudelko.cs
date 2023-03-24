@@ -1,12 +1,13 @@
 using System;
+using System.Collections.Generic;
 using PudelkoLibrary.Enums;
 
 namespace PudelkoLibrary
 {
-    public sealed class Pudelko : IFormattable
+    public sealed class Pudelko : IFormattable, IEquatable<Pudelko>
     {
         // --==## [CLASS VARIABLES] ##==--
-        public readonly int a;
+        private readonly int a;
         public double A
         {
             get => SizeToSize(a, UnitOfMeasure.milimeter, UnitOfMeasure.meter);
@@ -22,12 +23,29 @@ namespace PudelkoLibrary
             get => SizeToSize(c, UnitOfMeasure.milimeter, UnitOfMeasure.meter);
         }
         private UnitOfMeasure Unit;
+        public double Objetosc
+        {
+            get => Math.Round(
+                SizeToSize(a, UnitOfMeasure.milimeter, UnitOfMeasure.meter) * 
+                SizeToSize(b, UnitOfMeasure.milimeter, UnitOfMeasure.meter) * 
+                SizeToSize(c, UnitOfMeasure.milimeter, UnitOfMeasure.meter),
+                9);
+        }
+        public double Pole
+        {
+            get => Math.Round(
+                2 * (
+                (SizeToSize(a, UnitOfMeasure.milimeter, UnitOfMeasure.meter) * SizeToSize(b, UnitOfMeasure.milimeter, UnitOfMeasure.meter)) +
+                (SizeToSize(b, UnitOfMeasure.milimeter, UnitOfMeasure.meter) * SizeToSize(c, UnitOfMeasure.milimeter, UnitOfMeasure.meter)) +
+                (SizeToSize(c, UnitOfMeasure.milimeter, UnitOfMeasure.meter) * SizeToSize(a, UnitOfMeasure.milimeter, UnitOfMeasure.meter))
+                ), 6);
+        }
 
         // --==## [METHODS] ##==--
 
         //Internal
-        private double SizeToSize(double size, UnitOfMeasure unit, UnitOfMeasure desiredUnit) => size * (double)UnitToNumber(unit) / (double)UnitToNumber(desiredUnit);
-
+        private double SizeToSize(double size, UnitOfMeasure unit, UnitOfMeasure desiredUnit) 
+            => size * (double)UnitToNumber(unit) / (double)UnitToNumber(desiredUnit);
         private string UnitToString(UnitOfMeasure unit)
         {
             switch (unit)
@@ -40,7 +58,6 @@ namespace PudelkoLibrary
                     return "mm";
             }
         }
-
         private int UnitToNumber(UnitOfMeasure unit)
         {
             switch (unit)
@@ -53,7 +70,6 @@ namespace PudelkoLibrary
                     return 1;
             }
         }
-
         private UnitOfMeasure StringToUnit(string unit)
         {
             switch (unit)
@@ -70,7 +86,6 @@ namespace PudelkoLibrary
         }
 
         //String related
-        
         public string ToString(string desiredUnit)
         {
             if (desiredUnit == null) desiredUnit = "m";
@@ -87,13 +102,104 @@ namespace PudelkoLibrary
                     throw new FormatException();
             }
         }
-
         public override string ToString()
-    => string.Format("{1:0.000} {0} × {2:0.000} {0} × {3:0.000} {0}", UnitToString(UnitOfMeasure.meter), A, B, C);
-
+            => string.Format("{1:0.000} {0} × {2:0.000} {0} × {3:0.000} {0}", UnitToString(UnitOfMeasure.meter), A, B, C);
         public string ToString(string format, IFormatProvider formatProvider)
             => string.Format("{1:0.000} {0} × {2:0.000} {0} × {3:0.000} {0}", UnitToString(UnitOfMeasure.meter), A, B, C);
 
+        //Equatable
+        public override bool Equals(object other)
+        {
+            //Check for null
+            if (other is null) return false;
+            
+            //Check for the same reference
+            if (ReferenceEquals(this, other)) return true;
+
+            //Check if other is Pudelko
+            if (other is Pudelko pudelko) Equals(pudelko);
+
+            //Return false, as other is not Pudelko
+            return false;
+        }
+        public bool Equals(Pudelko other)
+        {
+            //Check for null
+            if (other is null) return false;
+
+            //Check for the same reference
+            if (ReferenceEquals(this, other)) return true;
+
+            //Check if objects are equal; Start by creating a List of other Pudelko sizes
+            var otherSizes = new List<double> { other.A, other.B, other.C };
+
+            //Then, check if List contains each size - if it does, remove said size from list
+            int temp = otherSizes.FindIndex(x => x==A);
+            if (temp != -1)
+            {
+                otherSizes.RemoveAt(temp);
+                temp = otherSizes.FindIndex(x => x == B);
+                if (temp != -1)
+                {
+                    otherSizes.RemoveAt(temp);
+                    return otherSizes[0] == C;
+                }
+            }
+            return false;
+        }
+        public override int GetHashCode() 
+            => HashCode.Combine(a,b,c);
+
+        // --==## [OPERATORS] ##==--
+
+        public static bool operator ==(Pudelko pud1, Pudelko pud2) => pud1.Equals(pud2);
+        public static bool operator !=(Pudelko pud1, Pudelko pud2) => !pud1.Equals(pud2);
+        public static Pudelko operator+(Pudelko mainPudelko, Pudelko pudelko)
+        {
+            //Create an array of possible Pudelko's sizes
+            var otherPudelko = new double[6][];
+            otherPudelko[0] = new double[3] { pudelko.A, pudelko.B, pudelko.C };
+            otherPudelko[1] = new double[3] { pudelko.A, pudelko.C, pudelko.B };
+            otherPudelko[2] = new double[3] { pudelko.C, pudelko.A, pudelko.B };
+            otherPudelko[3] = new double[3] { pudelko.B, pudelko.A, pudelko.C };
+            otherPudelko[4] = new double[3] { pudelko.C, pudelko.B, pudelko.A };
+            otherPudelko[5] = new double[3] { pudelko.B, pudelko.C, pudelko.A };
+
+            //Find the smalles Pudelko that will fit both
+            var currentSizes = new double[3]; //TODO CHANGE TO LIST, SO IT COLLECTS ALL POSSIBILITIES !!!
+            var smallestSizes = new double[3] {11,11,11}; //Will always be bigger
+
+            for (int i = 0;i< otherPudelko.Length;i++)
+            {
+                //Move along A edge
+                currentSizes[0] = mainPudelko.A + otherPudelko[i][0]; //Sum of A edges from both Pudelko objects
+                currentSizes[1] = (mainPudelko.B < otherPudelko[i][1]) ? otherPudelko[i][1] : mainPudelko.B; //The longer B edge
+                currentSizes[2] = (mainPudelko.C < otherPudelko[i][2]) ? otherPudelko[i][2] : mainPudelko.C; //The longer C edge
+                //Update smallestSizes if needed
+                if (currentSizes[0] * currentSizes[1] * currentSizes[2] < smallestSizes[0] * smallestSizes[1] * smallestSizes[2])
+                    for (int j = 0; j < 3; j++)
+                        smallestSizes[j] = currentSizes[j];
+
+                //Move along B edge
+                currentSizes[1] = mainPudelko.B + otherPudelko[i][1]; //Sum of B edges from both Pudelko objects
+                currentSizes[0] = (mainPudelko.A < otherPudelko[i][0]) ? otherPudelko[i][0] : mainPudelko.A; //The longer A edge
+                //Update smallestSizes if needed
+                if (currentSizes[0] * currentSizes[1] * currentSizes[2] < smallestSizes[0] * smallestSizes[1] * smallestSizes[2])
+                    for (int j = 0; j < 3; j++)
+                        smallestSizes[j] = currentSizes[j];
+
+                //Move along C edge
+                currentSizes[2] = mainPudelko.C + otherPudelko[i][2]; //Sum of C edges from both Pudelko objects
+                currentSizes[1] = (mainPudelko.B < otherPudelko[i][1]) ? otherPudelko[i][1] : mainPudelko.B; //The longer B edge
+                //Update smallestSizes if needed
+                if (currentSizes[0] * currentSizes[1] * currentSizes[2] < smallestSizes[0] * smallestSizes[1] * smallestSizes[2])
+                    for (int j = 0; j < 3; j++)
+                        smallestSizes[j] = currentSizes[j];
+            }
+
+            //Return results
+            return new Pudelko(smallestSizes[0], smallestSizes[1], smallestSizes[2]);
+        }
 
         // --==## [CONSTRUCTORS] ##==--
         public Pudelko() : this(0.1, 0.1, 0.1, UnitOfMeasure.meter)

@@ -447,17 +447,111 @@ namespace PudelkoUnitTests
         #endregion
 
 
-        #region Pole, Obj×to×× ===================================
-        // ToDo
+        #region Pole ===================================
+        [DataTestMethod, TestCategory("Properties Area")]
+        [DataRow(10, 100, 1000, 0.222)]
+        public void Property_Pole_InMilimeter(double a, double b, double c, double expectedArea)
+        {
+            var p = new Pudelko(a, b, c, unit: UnitOfMeasure.milimeter);
+            Assert.AreEqual(expectedArea, p.Pole);
+        }
+        
+        [DataTestMethod, TestCategory("Properties Area")]
+        [DataRow(1, 10, 100, 0.222)]
+        public void Property_Pole_InCentimeter(double a, double b, double c, double expectedArea)
+        {
+            var p = new Pudelko(a, b, c, unit: UnitOfMeasure.centimeter);
+            Assert.AreEqual(expectedArea, p.Pole);
+        }
+        
+        [DataTestMethod, TestCategory("Properties Area")]
+        [DataRow(1, 1, 2, 10)]
+        public void Property_Pole_InMeter(double a, double b, double c, double expectedArea)
+        {
+            var p = new Pudelko(a, b, c, unit: UnitOfMeasure.meter);
+            Assert.AreEqual(expectedArea, p.Pole);
+        }
+
+        #endregion
+
+        #region Objetosc ===================================
+
+        [DataTestMethod, TestCategory("Properties Volume")]
+        [DataRow(10, 10, 10, 0.000001)]
+        public void Property_Objetosc_InMilimeter(double a, double b, double c, double expectedVolume)
+        {
+            var p = new Pudelko(a, b, c, unit: UnitOfMeasure.milimeter);
+            Assert.AreEqual(expectedVolume, p.Objetosc);
+        }
+
+        [DataTestMethod, TestCategory("Properties Volume")]
+        [DataRow(100, 10, 10, 0.01)]
+        public void Property_Objetosc_InCentimeter(double a, double b, double c, double expectedVolume)
+        {
+            var p = new Pudelko(a, b, c, unit: UnitOfMeasure.centimeter);
+            Assert.AreEqual(expectedVolume, p.Objetosc);
+        }
+
+        [DataTestMethod, TestCategory("Properties Volume")]
+        [DataRow(10, 10, 10, 1000)]
+        public void Property_Objetosc_InMeter(double a, double b, double c, double expectedVolume)
+        {
+            var p = new Pudelko(a, b, c, unit: UnitOfMeasure.meter);
+            Assert.AreEqual(expectedVolume, p.Objetosc);
+        }
 
         #endregion
 
         #region Equals ===========================================
-        // ToDo
+        [DataTestMethod, TestCategory("Equals")]
+        [DataRow(2, 4, 6, 6, 2, 4, true)]
+        [DataRow(6, 4, 6, 4, 6, 6, true)]
+        [DataRow(1, 2, 2, 2, 2, 1, true)]
+        [DataRow(6, 6, 6, 5, 5, 5, false)]
+        [DataRow(5, 4, 3, 3, 2, 1, false)]
+        [DataRow(2, 4, 6, 2, 2, 6, false)]
+        public void Equals(double a, double b, double c, double d, double e, double f, bool result)
+        {
+            var p = new Pudelko(a, b, c);
+            var g = new Pudelko(d, e, f);
+            Assert.AreEqual(result, p.Equals(g));
+        }
         #endregion
 
         #region Operators overloading ===========================
-        // ToDo
+
+        [DataTestMethod, TestCategory("Operators Overloading")]
+        [DataRow(2, 4, 6, 6, 2, 4, true)]
+        [DataRow(6, 4, 6, 6, 6, 6, false)]
+        public void Operator_IsEqual(double a, double b, double c, double d, double e, double f, bool result)
+        {
+            var p = new Pudelko(a, b, c);
+            var g = new Pudelko(d, e, f);
+            Assert.AreEqual(result, p==g);
+        }
+
+        [DataTestMethod, TestCategory("Operators Overloading")]
+        [DataRow(2, 4, 6, 6, 2, 4, false)]
+        [DataRow(6, 4, 6, 6, 6, 6, true)]
+        public void Operator_IsNotEqual(double a, double b, double c, double d, double e, double f, bool result)
+        {
+            var p = new Pudelko(a, b, c);
+            var g = new Pudelko(d, e, f);
+            Assert.AreEqual(result, p != g);
+        }
+
+        [DataTestMethod, TestCategory("Operators Overloading")]
+        [DataRow(1, 1, 1, 1, 1, 1, 1, 1, 2)]
+        [DataRow(3, 3, 1, 1, 3, 3, 3, 3, 2)]
+        [DataRow(6, 6, 1, 1, 1, 1, 1, 1, 2)]
+        public void Operator_Add(double a, double b, double c, double d, double e, double f, double g, double h, double i)
+        {
+            var p1 = new Pudelko(a, b, c);
+            var p2 = new Pudelko(d, e, f);
+            var p3 = new Pudelko(g, h, i);
+            Assert.AreEqual((p1+p2).Objetosc, p3.Objetosc);
+        }
+
         #endregion
 
         #region Conversions =====================================

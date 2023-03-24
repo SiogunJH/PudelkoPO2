@@ -10,7 +10,6 @@ namespace Program
         {
             var temp = new Pudelko(11, 2.0,unit: UnitOfMeasure.milimeter);
             Console.WriteLine(temp);
-            Console.WriteLine(temp.a);
         }
     }
 }
