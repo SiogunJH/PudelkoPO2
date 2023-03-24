@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using PudelkoLibrary.Enums;
 
 namespace PudelkoLibrary
@@ -202,6 +203,52 @@ namespace PudelkoLibrary
 
             //Return results
             return new Pudelko(smallestSizes[0], smallestSizes[1], smallestSizes[2]);
+        }
+
+        // --==## [CONVERSION] ##==--
+
+        public static explicit operator double[](Pudelko pud) => new double[3] { pud.A, pud.B, pud.C };
+        
+        public static implicit operator Pudelko(ValueTuple<int, int, int> tuple) => new Pudelko(tuple.Item1, tuple.Item2, tuple.Item3, UnitOfMeasure.milimeter);
+
+        public static Pudelko Parse(string text)
+        {
+            //Split string and validate its length
+            string[] size = text.Split('×');
+            if (size.Length != 3) throw new FormatException();
+
+            //More validation
+            if (
+                size[0].Split(' ', StringSplitOptions.RemoveEmptyEntries).Length != 2 &&
+                size[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Length != 2 &&
+                size[2].Split(' ', StringSplitOptions.RemoveEmptyEntries).Length != 2
+                ) 
+                throw new FormatException();
+
+            //Determine the unit
+            UnitOfMeasure unit;
+            switch (size[0].Split(' ', StringSplitOptions.RemoveEmptyEntries)[1].Trim())
+            {
+                case "m":
+                    unit = UnitOfMeasure.meter;
+                    break;
+                case "cm":
+                    unit = UnitOfMeasure.centimeter;
+                    break;
+                case "mm":
+                    unit = UnitOfMeasure.milimeter;
+                    break;
+                default:
+                    throw new FormatException();
+            }
+
+            //Return parsed object
+            return new Pudelko(
+                a: double.Parse(size[0].Split(' ', StringSplitOptions.RemoveEmptyEntries)[0].Trim()),
+                b: double.Parse(size[1].Split(' ', StringSplitOptions.RemoveEmptyEntries)[0].Trim()),
+                c: double.Parse(size[2].Split(' ', StringSplitOptions.RemoveEmptyEntries)[0].Trim()),
+                unit: unit
+                );
         }
 
         // --==## [CONSTRUCTORS] ##==--

@@ -556,7 +556,7 @@ namespace PudelkoUnitTests
         #endregion
 
         #region Conversions =====================================
-        /*
+        
         [TestMethod]
         public void ExplicitConversion_ToDoubleArray_AsMeters()
         {
@@ -581,6 +581,7 @@ namespace PudelkoUnitTests
         #endregion
 
         #region Indexer, enumeration ============================
+        /*
         [TestMethod]
         public void Indexer_ReadFrom()
         {
@@ -607,6 +608,16 @@ namespace PudelkoUnitTests
         #endregion
 
         #region Parsing =========================================
+
+        [DataTestMethod, TestCategory("Parsing from String")]
+        [DataRow("5.000 m × 7.000 m × 8.500 m", 5, 7, 8.5, UnitOfMeasure.meter)]
+        [DataRow("1 mm × 1 mm × 1 mm", 1, 1, 1, UnitOfMeasure.milimeter)]
+
+        public void Parsing_String(string toParse, double a, double b, double c, UnitOfMeasure unit)
+        {
+            var p1 = new Pudelko(a, b, c, unit);
+            Assert.AreEqual(true, p1==Pudelko.Parse(toParse));
+        }
 
         #endregion
 
