@@ -166,7 +166,7 @@ namespace PudelkoLibrary
             otherPudelko[5] = new double[3] { pudelko.B, pudelko.C, pudelko.A };
 
             //Find the smalles Pudelko that will fit both
-            var currentSizes = new double[3]; //TODO CHANGE TO LIST, SO IT COLLECTS ALL POSSIBILITIES !!!
+            var currentSizes = new double[3];
             var smallestSizes = new double[3] {11,11,11}; //Will always be bigger
 
             for (int i = 0;i< otherPudelko.Length;i++)
@@ -175,24 +175,27 @@ namespace PudelkoLibrary
                 currentSizes[0] = mainPudelko.A + otherPudelko[i][0]; //Sum of A edges from both Pudelko objects
                 currentSizes[1] = (mainPudelko.B < otherPudelko[i][1]) ? otherPudelko[i][1] : mainPudelko.B; //The longer B edge
                 currentSizes[2] = (mainPudelko.C < otherPudelko[i][2]) ? otherPudelko[i][2] : mainPudelko.C; //The longer C edge
-                //Update smallestSizes if needed
-                if (currentSizes[0] * currentSizes[1] * currentSizes[2] < smallestSizes[0] * smallestSizes[1] * smallestSizes[2])
+                //Update smallestSizes if needed and if possible
+                if (currentSizes[0] * currentSizes[1] * currentSizes[2] < smallestSizes[0] * smallestSizes[1] * smallestSizes[2] && //if currentSize volume is smaller
+                    currentSizes[0] <= 10 && currentSizes[1] <= 10 && currentSizes[2] <= 10) //if currentSize are within Pudelko borders
                     for (int j = 0; j < 3; j++)
                         smallestSizes[j] = currentSizes[j];
 
                 //Move along B edge
                 currentSizes[1] = mainPudelko.B + otherPudelko[i][1]; //Sum of B edges from both Pudelko objects
                 currentSizes[0] = (mainPudelko.A < otherPudelko[i][0]) ? otherPudelko[i][0] : mainPudelko.A; //The longer A edge
-                //Update smallestSizes if needed
-                if (currentSizes[0] * currentSizes[1] * currentSizes[2] < smallestSizes[0] * smallestSizes[1] * smallestSizes[2])
+                //Update smallestSizes if needed and if possible
+                if (currentSizes[0] * currentSizes[1] * currentSizes[2] < smallestSizes[0] * smallestSizes[1] * smallestSizes[2] && //if currentSize volume is smaller
+                    currentSizes[0] <= 10 && currentSizes[1] <= 10 && currentSizes[2] <= 10) //if currentSize are within Pudelko borders
                     for (int j = 0; j < 3; j++)
                         smallestSizes[j] = currentSizes[j];
 
                 //Move along C edge
                 currentSizes[2] = mainPudelko.C + otherPudelko[i][2]; //Sum of C edges from both Pudelko objects
                 currentSizes[1] = (mainPudelko.B < otherPudelko[i][1]) ? otherPudelko[i][1] : mainPudelko.B; //The longer B edge
-                //Update smallestSizes if needed
-                if (currentSizes[0] * currentSizes[1] * currentSizes[2] < smallestSizes[0] * smallestSizes[1] * smallestSizes[2])
+                //Update smallestSizes if needed and if possible
+                if (currentSizes[0] * currentSizes[1] * currentSizes[2] < smallestSizes[0] * smallestSizes[1] * smallestSizes[2] && //if currentSize volume is smaller
+                    currentSizes[0] <= 10 && currentSizes[1] <= 10 && currentSizes[2] <= 10) //if currentSize are within Pudelko borders
                     for (int j = 0; j < 3; j++)
                         smallestSizes[j] = currentSizes[j];
             }

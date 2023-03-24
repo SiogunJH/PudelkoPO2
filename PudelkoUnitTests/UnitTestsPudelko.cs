@@ -543,7 +543,8 @@ namespace PudelkoUnitTests
         [DataTestMethod, TestCategory("Operators Overloading")]
         [DataRow(1, 1, 1, 1, 1, 1, 1, 1, 2)]
         [DataRow(3, 3, 1, 1, 3, 3, 3, 3, 2)]
-        [DataRow(6, 6, 1, 1, 1, 1, 1, 1, 2)]
+        [DataRow(6, 6, 1, 1, 1, 1, 1, 7, 6)]
+        [DataRow(7, 7, 1, 1, 7, 7, 7, 7, 2)]
         public void Operator_Add(double a, double b, double c, double d, double e, double f, double g, double h, double i)
         {
             var p1 = new Pudelko(a, b, c);
