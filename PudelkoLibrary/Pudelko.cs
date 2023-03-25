@@ -23,7 +23,6 @@ namespace PudelkoLibrary
         {
             get => SizeToSize(c, UnitOfMeasure.milimeter, UnitOfMeasure.meter);
         }
-        private UnitOfMeasure Unit;
         public double Objetosc
         {
             get => Math.Round(
@@ -211,6 +210,20 @@ namespace PudelkoLibrary
         
         public static implicit operator Pudelko(ValueTuple<int, int, int> tuple) => new Pudelko(tuple.Item1, tuple.Item2, tuple.Item3, UnitOfMeasure.milimeter);
 
+        public double this[int index]
+        {
+            get
+            {
+                switch(index)
+                {
+                    case 0: return A;
+                    case 1: return B;
+                    case 2: return C;
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
+
         public static Pudelko Parse(string text)
         {
             //Split string and validate its length
@@ -267,7 +280,6 @@ namespace PudelkoLibrary
             this.a = (int)Math.Floor(SizeToSize((double)a, unit, UnitOfMeasure.milimeter));
             this.b = (int)Math.Floor(SizeToSize((double)b, unit, UnitOfMeasure.milimeter));
             this.c = (int)Math.Floor(SizeToSize((double)c, unit, UnitOfMeasure.milimeter));
-            this.Unit = unit;
 
             //Test for values out of range from 1mm to 10000mm
             if (this.a <= 0 || this.b <= 0 || this.c <= 0 || this.a > 10000 || this.b > 10000 || this.c > 10000)

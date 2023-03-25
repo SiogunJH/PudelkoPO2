@@ -581,7 +581,6 @@ namespace PudelkoUnitTests
         #endregion
 
         #region Indexer, enumeration ============================
-        /*
         [TestMethod]
         public void Indexer_ReadFrom()
         {
@@ -590,7 +589,7 @@ namespace PudelkoUnitTests
             Assert.AreEqual(p.B, p[1]);
             Assert.AreEqual(p.C, p[2]);
         }
-
+        /*
         [TestMethod]
         public void ForEach_Test()
         {
