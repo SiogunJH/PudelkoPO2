@@ -589,7 +589,7 @@ namespace PudelkoUnitTests
             Assert.AreEqual(p.B, p[1]);
             Assert.AreEqual(p.C, p[2]);
         }
-        /*
+
         [TestMethod]
         public void ForEach_Test()
         {
@@ -602,7 +602,6 @@ namespace PudelkoUnitTests
                 i++;
             }
         }
-        */
 
         #endregion
 

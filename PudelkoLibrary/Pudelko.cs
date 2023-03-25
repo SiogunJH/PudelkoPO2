@@ -1,11 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using PudelkoLibrary.Enums;
 
 namespace PudelkoLibrary
 {
-    public sealed class Pudelko : IFormattable, IEquatable<Pudelko>
+    public sealed class Pudelko : IFormattable, IEquatable<Pudelko>, IEnumerable<double>
     {
         // --==## [CLASS VARIABLES] ##==--
         private readonly int a;
@@ -223,7 +224,6 @@ namespace PudelkoLibrary
                 }
             }
         }
-
         public static Pudelko Parse(string text)
         {
             //Split string and validate its length
@@ -262,6 +262,16 @@ namespace PudelkoLibrary
                 c: double.Parse(size[2].Split(' ', StringSplitOptions.RemoveEmptyEntries)[0].Trim()),
                 unit: unit
                 );
+        }
+        public IEnumerator<double> GetEnumerator()
+        {
+            yield return A;
+            yield return B;
+            yield return C;
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         // --==## [CONSTRUCTORS] ##==--
